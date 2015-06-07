@@ -1,6 +1,5 @@
 #ifndef _MAXHEAP_H_
 #define _MAXHEAP_H_
-#include <iostream>
 
 template <class T>
 class MaxHeap{
@@ -9,12 +8,10 @@ private:
     int heapSize;
     int capacity;
 
-    void percUp(int curIndex);
-    void percDown(int curIndex);
+    void percDown(int);
     void BuildHeap();
 
 public:
-    MaxHeap(int);
     MaxHeap(T[], int, int);
     virtual ~MaxHeap(){delete []heapArray;};
     int LeftChild(int pos) const;
@@ -32,7 +29,7 @@ MaxHeap<T>::MaxHeap(T Array[], int cur, int cap){
     heapSize = cur;
     capacity = cap;
     heapArray = Array;
-    //BuildHeap();
+    BuildHeap();
 }
 
 template <class T>
@@ -58,33 +55,22 @@ int MaxHeap<T>::Parent(int pos) const{
 
 template <class T>
 void MaxHeap<T>::RemoveMax(){
-    /*if(heapSize == 0){
-        cerr << "Cannot Delete";
-        exit(1);
+    if(heapSize == 0){
+        return;
     }
-    else{*/
+    else{
         T temp = heapArray[0];
-        heapArray[0] = heapArray[capacity];
-        heapArray[capacity] = temp;
+        heapArray[0] = heapArray[heapSize-1];
+        heapArray[heapSize-1] = temp;
+        heapSize--;
         capacity--;
 
         if(heapSize > 1)
             percDown(0);
-        return heapArray[heapSize];
-    //}
-}
-
-
-template <class T>
-void MaxHeap<T>::percUp(int curIndex){
-    int tempPos = curIndex;
-    T temp = heapArray[tempPos];
-    while((tempPos > 0) && (heapArray[Parent(tempPos)] > temp)){
-        heapArray[tempPos] = heapArray[Parent(tempPos)];
-        tempPos = Parent(tempPos);
     }
-    heapArray[tempPos] = temp;
 }
+
+
 
 template <class T>
 void MaxHeap<T>::percDown(int curIndex){
@@ -92,9 +78,9 @@ void MaxHeap<T>::percDown(int curIndex){
     int j = LeftChild(i);
     T temp = heapArray[i];
     while(j < heapSize){
-        if((j < heapSize-1) && ( heapArray[j] > heapArray[j+1]))
+        if((j < heapSize-1) && ( heapArray[j] < heapArray[j+1]))
             j++;
-        if(temp > heapArray[j]){
+        if(temp < heapArray[j]){
             heapArray[i] = heapArray[j];
             i = j;
             j = LeftChild(j);
